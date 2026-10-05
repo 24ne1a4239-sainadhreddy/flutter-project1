@@ -1,0 +1,899 @@
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const SportsInformationApp());
+}
+
+class SportsInformationApp extends StatelessWidget {
+  const SportsInformationApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Sports Information App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
+
+// ======================================================
+// LOGIN PAGE
+// ======================================================
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool showPassword = false;
+
+  void login() {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter email and password'),
+        ),
+      );
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue,
+              Colors.lightBlueAccent,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.sports_soccer,
+                      size: 80,
+                      color: Colors.blue,
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    const Text(
+                      'Sports Information',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    const Text(
+                      'Login to get the latest sports updates',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    TextField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'Enter your email',
+                        prefixIcon: const Icon(Icons.email),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    TextField(
+                      controller: passwordController,
+                      obscureText: !showPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            showPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: login,
+                        child: const Text(
+                          'LOGIN',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Password recovery is not connected yet',
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('Forgot Password?'),
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Registration page will be added later',
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('Sign Up'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ======================================================
+// HOME PAGE
+// ======================================================
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  void openPage(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Sports Information',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(),
+                ),
+                (route) => false,
+              );
+            },
+          ),
+        ],
+      ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Welcome to Sports World!',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            const Text(
+              'Get the latest information about your favorite sports.',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
+            const Text(
+              'Sports Categories',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            // ROW 1
+            Row(
+              children: [
+                Expanded(
+                  child: SportCard(
+                    icon: Icons.sports_cricket,
+                    title: 'Cricket',
+                    color: Colors.green,
+                    onTap: () {
+                      openPage(
+                        context,
+                        const CricketPage(),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: SportCard(
+                    icon: Icons.sports_soccer,
+                    title: 'Football',
+                    color: Colors.orange,
+                    onTap: () {
+                      openPage(
+                        context,
+                        const FootballPage(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // ROW 2
+            Row(
+              children: [
+                Expanded(
+                  child: SportCard(
+                    icon: Icons.sports_tennis,
+                    title: 'Tennis',
+                    color: Colors.blue,
+                    onTap: () {
+                      openPage(
+                        context,
+                        const TennisPage(),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: SportCard(
+                    icon: Icons.sports_basketball,
+                    title: 'Basketball',
+                    color: Colors.red,
+                    onTap: () {
+                      openPage(
+                        context,
+                        const BasketballPage(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+
+            const Text(
+              'Latest Sports Updates',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            NewsCard(
+              icon: Icons.sports_cricket,
+              title: 'Cricket',
+              description: 'Latest cricket match updates and scores.',
+              onTap: () {
+                openPage(
+                  context,
+                  const CricketPage(),
+                );
+              },
+            ),
+
+            NewsCard(
+              icon: Icons.sports_soccer,
+              title: 'Football',
+              description: 'Latest football news and tournament updates.',
+              onTap: () {
+                openPage(
+                  context,
+                  const FootballPage(),
+                );
+              },
+            ),
+
+            NewsCard(
+              icon: Icons.sports_tennis,
+              title: 'Tennis',
+              description: 'Latest tennis tournament information.',
+              onTap: () {
+                openPage(
+                  context,
+                  const TennisPage(),
+                );
+              },
+            ),
+
+            NewsCard(
+              icon: Icons.sports_basketball,
+              title: 'Basketball',
+              description: 'Latest basketball match updates.',
+              onTap: () {
+                openPage(
+                  context,
+                  const BasketballPage(),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
+      // BOTTOM NAVIGATION
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+            openPage(
+              context,
+              const SportsPage(),
+            );
+          } else if (index == 2) {
+            openPage(
+              context,
+              const ProfilePage(),
+            );
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports),
+            label: 'Sports',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ======================================================
+// SPORT CARD
+// ======================================================
+
+class SportCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color color;
+  final VoidCallback onTap;
+
+  const SportCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 10,
+          ),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 45,
+                color: color,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                'View Details',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ======================================================
+// NEWS CARD
+// ======================================================
+
+class NewsCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+
+  const NewsCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        onTap: onTap,
+        leading: CircleAvatar(
+          child: Icon(icon),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(description),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+        ),
+      ),
+    );
+  }
+}
+
+// ======================================================
+// SPORTS PAGE
+// ======================================================
+
+class SportsPage extends StatelessWidget {
+  const SportsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('All Sports'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _sportsItem(
+            context,
+            Icons.sports_cricket,
+            'Cricket',
+            Colors.green,
+            const CricketPage(),
+          ),
+          _sportsItem(
+            context,
+            Icons.sports_soccer,
+            'Football',
+            Colors.orange,
+            const FootballPage(),
+          ),
+          _sportsItem(
+            context,
+            Icons.sports_tennis,
+            'Tennis',
+            Colors.blue,
+            const TennisPage(),
+          ),
+          _sportsItem(
+            context,
+            Icons.sports_basketball,
+            'Basketball',
+            Colors.red,
+            const BasketballPage(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sportsItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    Color color,
+    Widget page,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 15),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(15),
+        leading: Icon(
+          icon,
+          size: 40,
+          color: color,
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: const Text('Tap to view information'),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => page,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ======================================================
+// CRICKET PAGE
+// ======================================================
+
+class CricketPage extends StatelessWidget {
+  const CricketPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SportDetailsPage(
+      title: 'Cricket',
+      icon: Icons.sports_cricket,
+      color: Colors.green,
+      information:
+          'Cricket is a popular team sport played between two teams. '
+          'The main formats are Test cricket, One Day International (ODI), '
+          'and Twenty20 (T20). Players score runs by hitting the ball '
+          'and teams try to take wickets.',
+    );
+  }
+}
+
+// ======================================================
+// FOOTBALL PAGE
+// ======================================================
+
+class FootballPage extends StatelessWidget {
+  const FootballPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SportDetailsPage(
+      title: 'Football',
+      icon: Icons.sports_soccer,
+      color: Colors.orange,
+      information:
+          'Football is a team sport played between two teams. '
+          'Players try to score goals by moving the ball into the '
+          'opponent team goal. Football is one of the most popular '
+          'sports in the world.',
+    );
+  }
+}
+
+// ======================================================
+// TENNIS PAGE
+// ======================================================
+
+class TennisPage extends StatelessWidget {
+  const TennisPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SportDetailsPage(
+      title: 'Tennis',
+      icon: Icons.sports_tennis,
+      color: Colors.blue,
+      information:
+          'Tennis is a racket sport played between two players or '
+          'two teams of players. Players hit a ball over a net using '
+          'a racket. The objective is to make the ball land inside '
+          'the opponent area.',
+    );
+  }
+}
+
+// ======================================================
+// BASKETBALL PAGE
+// ======================================================
+
+class BasketballPage extends StatelessWidget {
+  const BasketballPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SportDetailsPage(
+      title: 'Basketball',
+      icon: Icons.sports_basketball,
+      color: Colors.red,
+      information:
+          'Basketball is a team sport where two teams try to score '
+          'points by throwing a ball through the opponent basket. '
+          'Players can pass, dribble and shoot the ball during the game.',
+    );
+  }
+}
+
+// ======================================================
+// COMMON SPORT DETAILS PAGE
+// ======================================================
+
+class SportDetailsPage extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final String information;
+
+  const SportDetailsPage({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.information,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+
+            Icon(
+              icon,
+              size: 100,
+              color: color,
+            ),
+
+            const SizedBox(height: 20),
+
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  information,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    height: 1.6,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Back'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ======================================================
+// PROFILE PAGE
+// ======================================================
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 55,
+                child: Icon(
+                  Icons.person,
+                  size: 60,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                'Sports User',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              const Text(
+                'Welcome to Sports Information App',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                },
+                icon: const Icon(Icons.logout),
+                label: const Text('Logout'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
